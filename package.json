@@ -1,0 +1,20 @@
+{
+  "name": "shiletto-engine",
+  "version": "0.0.1",
+  "description": "Slot Game Engine in TypeScript",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Slots",
+    "Engine",
+    "TypeScript"
+  ],
+  "author": "Hendrik Müller-Röhr",
+  "license": "MIT",
+  "dependencies": {
+    "pixi.js": "^6.5.6",
+    "typescript": "^4.8.4"
+  }
+}
