@@ -15,7 +15,10 @@ export class Game extends Entity {
     super();
     this.name = config.name;
     this.stageSize = config.size;
-    this.application = new App({});
+    this.application = new App({
+      width: config.size[0], // Set width of application
+      height: config.size[1], // Set height of application
+    });
 
     this.stage = new Entity();
 
