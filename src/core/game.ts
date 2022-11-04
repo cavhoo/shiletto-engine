@@ -6,22 +6,18 @@ export interface IGameConfig {
 }
 
 export class Game extends Entity {
-  protected stageSize: [number, number];
   protected application: App;
-
-  protected stage: Entity;
 
   constructor(config: IGameConfig) {
     super();
     this.name = config.name;
-    this.stageSize = config.size;
     this.application = new App({
-      width: config.size[0], // Set width of application
-      height: config.size[1], // Set height of application
+      resolution: config.size,
     });
+  }
 
-    this.stage = new Entity();
-
-    this.application.stage.addChild(this.stage);
+  /** Get the Game Stage Entity. */
+  public get stage(): Entity {
+    return this.application.root;
   }
 }
