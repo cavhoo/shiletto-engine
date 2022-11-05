@@ -16,4 +16,13 @@ export interface IResourceManifest {
 }
 
 /** Base class for an asset loader. */
-export abstract class Loader {}
+export abstract class Loader {
+  /** Adds a resource manifest to the loader. */
+  public abstract addResourceManifest(manifest: IResourceManifest): void;
+
+  /** Adds a single resource bundle to the loader. */
+  public abstract addResourceBundle(resourceBundle: IResourceBundle): void;
+
+  /** Adds a single resource asset to the loader. */
+  public abstract addResource(resource: IResourceAsset): void;
+}
