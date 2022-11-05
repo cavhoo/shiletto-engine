@@ -1,8 +1,11 @@
 import { Application, Graphics } from "pixi.js";
+import { IResourceManifest } from "../../core/assets/loader";
 import { Entity } from "./entity";
+import { PixiLoader } from "./assets";
 
 export interface IAppOptions {
   resolution: [number, number];
+  assetManifest: IResourceManifest;
 }
 
 /** Shiletto Application wrapper based on PIXI.js */
@@ -13,6 +16,8 @@ export class App extends Application {
   protected _background!: Entity;
 
   protected options: IAppOptions;
+
+  protected loader: PixiLoader;
 
   constructor(options: IAppOptions) {
     const [width, height] = options.resolution;
@@ -26,6 +31,8 @@ export class App extends Application {
     });
     this.options = options;
     this._root = new Entity();
+    this.loader = new PixiLoader();
+    this.loader.addResourceManifest(options.assetManifest);
     this.setupStage();
   }
 
@@ -44,7 +51,7 @@ export class App extends Application {
 
     this.renderer.on("resize", () => this.handleResize());
     this.stage.addChild(this.root);
-    document.body.appendChild(this.view);
+    //document.body.appendChild(this.view as any);
     this.handleResize();
   }
 

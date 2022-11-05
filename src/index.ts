@@ -1,3 +1,3 @@
 export * from "./core";
-export * from "./rendering";
+export * from "./renderer";
 export * from "./slot";
