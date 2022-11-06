@@ -1,36 +1,62 @@
-/** A single Resource asset. */
-export interface IResourceAsset {
-  name: string;
-  srcs: string;
-}
+import {
+  IResourceAsset,
+  IResourceBundle,
+  IResourceManifest,
+} from "./resourceManifest";
 
-/** A collection of resources. */
-export interface IResourceBundle {
-  name: string;
-  assets: IResourceAsset[];
-}
+import { Assets } from "pixi.js";
 
-/** All resources that should be loaded. */
-export interface IResourceManifest {
-  bundles: IResourceBundle[];
-}
+export class PixiLoader {
+  protected _loadProgress: number = 0;
 
-/** Base class for an asset loader. */
-export abstract class Loader {
-  /** Adds a resource manifest to the loader. */
-  public abstract addResourceManifest(
-    manifest: IResourceManifest
-  ): Promise<void>;
+  /** @inheritdoc */
+  public addResourceManifest(manifest: IResourceManifest): Promise<void> {
+    return Assets.init({
+      manifest,
+    });
+  }
 
-  /** Adds a single resource bundle to the loader. */
-  public abstract addResourceBundle(resourceBundle: IResourceBundle): void;
+  /** @inheritdoc */
+  public addResourceBundle(resourceBundle: IResourceBundle): void {
+    Assets.addBundle(resourceBundle.name, {
+      ...resourceBundle.assets.reduce((bundle, asset) => {
+        bundle[asset.name] = asset.srcs;
+        return bundle;
+      }, {} as { [key: string]: string }),
+    });
+  }
 
-  /** Adds a single resource asset to the loader. */
-  public abstract addResource(resource: IResourceAsset): void;
+  /** @inheritdoc */
+  public addResource(resource: IResourceAsset): void {
+    Assets.add(resource.name, resource.srcs);
+  }
 
-  /** Get the current loading progress. */
-  public abstract get loadProgress(): number;
+  /** @inheritdoc */
+  public get loadProgress(): number {
+    return this._loadProgress;
+  }
 
-  /** Starts the loading of all registered assets. */
-  public abstract load(bundle: string): Promise<void | Record<string, void>>;
+  /** @inheritdoc */
+  public load(asset: string): Promise<void | Record<string, void>> {
+    return Assets.load(
+      asset,
+      (loadProgress) => (this._loadProgress = loadProgress)
+    );
+  }
+
+  /** @inheritdoc */
+  public loadBundle(bundle: string): Promise<void | Record<string, void>> {
+    return Assets.loadBundle(
+      bundle,
+      (loadProgress) => (this._loadProgress = loadProgress)
+    );
+  }
+
+  public getAsset(assetId: string): void | Record<string, void> {
+    const asset = Assets.get(assetId);
+    if (!asset) {
+      throw `Could not retrieve asset with id ${assetId}. Did you load it?`;
+    }
+    return asset;
+  }
 }

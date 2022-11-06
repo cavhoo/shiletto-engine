@@ -1,11 +1,11 @@
 import { Application, Graphics } from "pixi.js";
-import { IResourceManifest } from "../../core/assets/loader";
+import { PixiLoader } from "../assets/loader";
+import { IResourceManifest } from "../assets/resourceManifest";
 import { Entity } from "./entity";
-import { PixiLoader } from "./assets";
 
 export interface IAppOptions {
   resolution: [number, number];
-  assetManifest: IResourceManifest;
+  resourceManifest?: IResourceManifest;
 }
 
 /** Shiletto Application wrapper based on PIXI.js */
@@ -17,7 +17,7 @@ export class App extends Application {
 
   protected options: IAppOptions;
 
-  protected loader: PixiLoader;
+  protected _loader: PixiLoader;
 
   constructor(options: IAppOptions) {
     const [width, height] = options.resolution;
@@ -31,9 +31,15 @@ export class App extends Application {
     });
     this.options = options;
     this._root = new Entity();
-    this.loader = new PixiLoader();
-    this.loader.addResourceManifest(options.assetManifest);
+    this._loader = new PixiLoader();
+    if (options.resourceManifest) {
+      this.loader.addResourceManifest(options.resourceManifest);
+    }
     this.setupStage();
+
+    void this.loader
+      .loadBundle("loading-screen")
+      .then(() => console.log("Loaded."));
   }
 
   /** Setup the stage. */
@@ -51,7 +57,7 @@ export class App extends Application {
 
     this.renderer.on("resize", () => this.handleResize());
     this.stage.addChild(this.root);
-    //document.body.appendChild(this.view as any);
+    document.body.appendChild(this.view as any);
     this.handleResize();
   }
 
@@ -74,5 +80,10 @@ export class App extends Application {
     this._background = background;
     // Alawys add the background at the bottom
     this.stage.addChildAt(background, 0);
+  }
+
+  /** Returns the active loader class. Use it to add an load assets. */
+  public get loader(): PixiLoader {
+    return this._loader;
   }
 }

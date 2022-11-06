@@ -1,15 +1,11 @@
-import { Game } from "../core";
-import { Entity } from "../rendering";
+import { Game, Entity, IGameConfig } from "../core";
 
 export abstract class SlotGame extends Game {
   protected reelContainer!: Entity;
   protected background!: Entity;
 
-  constructor() {
-    super({
-      name: "slot",
-      size: [1920, 1080],
-    });
+  constructor(config: IGameConfig) {
+    super(config);
   }
 
   protected abstract createReelContainer(): void;

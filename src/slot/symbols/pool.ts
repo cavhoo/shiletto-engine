@@ -1,4 +1,4 @@
-import { Entity } from "../../rendering";
+import { Entity } from "../../core/rendering";
 
 export class Pool<T extends Entity> {
   protected pool: Map<string, T[]> = new Map([]);

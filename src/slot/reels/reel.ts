@@ -1,3 +1,3 @@
-import { Entity } from "../../rendering";
+import { Entity } from "../../core/rendering";
 
 export class Reel extends Entity {}
